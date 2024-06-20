@@ -1,10 +1,11 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
-import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
+import React, { useEffect, useState, useContext } from "react";
+import { collection, query, orderBy, limit, getDocs,  } from "firebase/firestore";
 import { db } from "../key/firebase";
 import Stepper from "../components/Stepper";
 import { Minus, Plus } from "phosphor-react";
 import { Label, NumberInput, Spinner } from "keep-react";
+import ParametersContext from '../ParametersContext';
 
 const SpinnerComponent = () => {
   return (
@@ -15,190 +16,203 @@ const SpinnerComponent = () => {
 }
 
 function Personalizacion() {
+  const { parameters, setParameters } = useContext(ParametersContext);
   const [imageURL, setImageURL] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchImageURL = async () => {
-      const q = query(
-        collection(db, "images"),
-        orderBy("createdAt", "desc"),
-        limit(1)
-      );
-      const querySnapshot = await getDocs(q);
+    const isImageUploaded = localStorage.getItem('isImageUploaded') === 'true';
+    if (isImageUploaded) {
+      fetchImageURL();
+    } else {
+      setImageURL(""); // No image available
+      setLoading(false);
+    }
+  }, []);
+
+  const fetchImageURL = async () => {
+    setLoading(true); // Set loading to true when fetching the image URL
+    const q = query(
+      collection(db, "images"),
+      orderBy("createdAt", "desc"),
+      limit(1)
+    );
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
       querySnapshot.forEach((doc) => {
         const url = doc.data().url;
         console.log("URL Imagen:", url); // Agrega este console.log para verificar la URL de la imagen
         setImageURL(url);
       });
-      setLoading(false);
-    };
+    } else {
+      setImageURL(""); // No image available
+    }
+    setLoading(false);
+  };
 
-    fetchImageURL();
-  }, []);
+  const updateParameters = (field, value) => {
+    setParameters((prev) => ({ ...prev, [field]: value }));
+  };
 
   const isImageUploaded = !loading && imageURL !== "";
-
-  const [dormitorio, setDormitorio] = useState(0);
-  const [bano, setBano] = useState(0);
-  const [cocina, setCocina] = useState(0);
-  const [sala, setSala] = useState(0);
-  const [comedor, setComedor] = useState(0);
-  const [cochera, setCochera] = useState(0);
 
   return (
     <div className="container mx-auto">
       <Stepper isImageUploaded={isImageUploaded} />
       <div className="grid grid-cols-2 gap-4">
-        <div className="grid grid-cols-2 gap-4 mt-10 ml-24">
+        <div className="grid grid-cols-2 gap-4 mt-6 ml-24">
           <fieldset className="space-y-1">
-            <Label>Dormitorio</Label>
+            <Label>Bedroom</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={dormitorio === 0}
-                onClick={() => setDormitorio((prev) => prev - 1)}
+                disabled={parameters.bedroom === 1}
+                onClick={() => updateParameters('bedroom', parameters.bedroom - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
-                min={0}
-                max={100}
-                value={dormitorio}
-                onChange={(e) => setDormitorio(+e.target.value)}
+                min={1}
+                max={5}
+                value={parameters.bedroom}
+                onChange={(e) => updateParameters('bedroom', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={dormitorio === 100}
-                onClick={() => setDormitorio((prev) => prev + 1)}
+                disabled={parameters.bedroom === 5}
+                onClick={() => updateParameters('bedroom', parameters.bedroom + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Baño</Label>
+            <Label>Bathroom</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={bano === 0}
-                onClick={() => setBano((prev) => prev - 1)}
+                disabled={parameters.bathroom === 1}
+                onClick={() => updateParameters('bathroom', parameters.bathroom - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
-                min={0}
-                max={100}
-                value={bano}
-                onChange={(e) => setBano(+e.target.value)}
+                min={1}
+                max={5}
+                value={parameters.bathroom}
+                onChange={(e) => updateParameters('bathroom', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={bano === 100}
-                onClick={() => setBano((prev) => prev + 1)}
+                disabled={parameters.bathroom === 5}
+                onClick={() => updateParameters('bathroom', parameters.bathroom + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Cocina</Label>
+            <Label>Kitchen</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={cocina === 0}
-                onClick={() => setCocina((prev) => prev - 1)}
+                disabled={parameters.kitchen === 1}
+                onClick={() => updateParameters('kitchen', parameters.kitchen - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
-                min={0}
-                max={100}
-                value={cocina}
-                onChange={(e) => setCocina(+e.target.value)}
+                min={1}
+                max={5}
+                value={parameters.kitchen}
+                onChange={(e) => updateParameters('kitchen', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={cocina === 100}
-                onClick={() => setCocina((prev) => prev + 1)}
+                disabled={parameters.kitchen === 5}
+                onClick={() => updateParameters('kitchen', parameters.kitchen + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Sala de estar</Label>
+            <Label>Living Room</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={sala === 0}
-                onClick={() => setSala((prev) => prev - 1)}
+                disabled={parameters.living_room === 0}
+                onClick={() => updateParameters('living_room', parameters.living_room - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
                 min={0}
-                max={100}
-                value={sala}
-                onChange={(e) => setSala(+e.target.value)}
+                max={3}
+                value={parameters.living_room}
+                onChange={(e) => updateParameters('living_room', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={sala === 100}
-                onClick={() => setSala((prev) => prev + 1)}
+                disabled={parameters.living_room === 3}
+                onClick={() => updateParameters('living_room', parameters.living_room + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Comedor</Label>
+            <Label>Dining Room</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={comedor === 0}
-                onClick={() => setComedor((prev) => prev - 1)}
+                disabled={parameters.dining_room === 0}
+                onClick={() => updateParameters('dining_room', parameters.dining_room - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
                 min={0}
-                max={100}
-                value={comedor}
-                onChange={(e) => setComedor(+e.target.value)}
+                max={3}
+                value={parameters.dining_room}
+                onChange={(e) => updateParameters('dining_room', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={comedor === 100}
-                onClick={() => setComedor((prev) => prev + 1)}
+                disabled={parameters.dining_room === 3}
+                onClick={() => updateParameters('dining_room', parameters.dining_room + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Cochera</Label>
+            <Label>Garage</Label>
             <NumberInput>
               <NumberInput.Button
-                disabled={cochera === 0}
-                onClick={() => setCochera((prev) => prev - 1)}
+                disabled={parameters.garage === 0}
+                onClick={() => updateParameters('garage', parameters.garage - 1)}
               >
                 <Minus size={18} color="#455468" />
               </NumberInput.Button>
               <NumberInput.Input
                 min={0}
-                max={100}
-                value={cochera}
-                onChange={(e) => setCochera(+e.target.value)}
+                max={2}
+                value={parameters.garage}
+                onChange={(e) => updateParameters('garage', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={cochera === 100}
-                onClick={() => setCochera((prev) => prev + 1)}
+                disabled={parameters.garage === 2}
+                onClick={() => updateParameters('garage', parameters.garage + 1)}
               >
                 <Plus size={16} color="#455468" />
               </NumberInput.Button>
             </NumberInput>
           </fieldset>
         </div>
-        <div className="flex flex-col items-center justify-center h-72">
+        <div className="flex flex-col items-center justify-center h-72 mt-10">
           {loading ? (
             <SpinnerComponent />
           ) : (
-            <img
-              src={imageURL}
-              alt="Vista previa de la imagen"
-              className="w-96 h-96 object-contain"
-            />
+            isImageUploaded ? (
+              <img
+                src={imageURL}
+                alt="Vista previa de la imagen"
+                className="w-96 h-96 object-contain"
+              />
+            ) : (
+              <p>No se ha subido una imagen</p>
+            )
           )}
         </div>
       </div>

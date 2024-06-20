@@ -11,9 +11,11 @@ import Personalizacion from "./pages/Personalizacion";
 import Propuestas from "./pages/Propuestas";
 import Exportacion from "./pages/Exportacion";
 import Reportes from "./pages/Reportes";
+import { ParametersProvider } from './ParametersContext';
 
 function App() {
   return (
+    <ParametersProvider>
     <Router>
       <Routes>
         <Route path="/" element={<Login />} />
@@ -37,6 +39,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </ParametersProvider>
   );
 }
 

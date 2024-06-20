@@ -43,6 +43,7 @@ export default function Login() {
                 INICIAR SESIÓN
               </h2>
             </div>
+
             <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-sm">
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div>
@@ -62,6 +63,7 @@ export default function Login() {
                     />
                   </div>
                 </div>
+
                 <div>
                   <div className="mt-2 relative">
                     <RiLockPasswordLine
@@ -80,6 +82,8 @@ export default function Login() {
                     />
                   </div>
                 </div>
+
+
                 <div>
                   <button
                     type="submit"
@@ -93,6 +97,7 @@ export default function Login() {
                     alt="Redes"
                   />
                 </div>
+                
               </form>
             </div>
           </div>

@@ -1,12 +1,12 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Steps, Button } from "keep-react";
 import { UploadSimple, MagicWand, ImageSquare, DownloadSimple } from "phosphor-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
-function Stepper({ isImageUploaded, result }) {
-  const [isImageValid, setIsImageValid] = useState(false); // Estado para la validez de la imagen
+function Stepper({ isImageUploaded, result, selectedProposal }) {
+  const [isImageValid, setIsImageValid] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const stepPaths = ["/cargaplano", "/personalizacion", "/propuestas", "/exportacion"];
@@ -34,14 +34,15 @@ function Stepper({ isImageUploaded, result }) {
   };
 
   const validateImage = (result) => {
-    // Lógica de validación de la imagen basada en el resultado de la predicción
     if (result.predicted_class === "planos" && result.confidence >= 80) {
       return true;
     }
     return false;
   };
 
-  const isNextDisabled = currentStepIndex === 0 && (!isImageUploaded || !isImageValid);
+  const isNextDisabled = (currentStepIndex === 0 && (!isImageUploaded || !isImageValid)) ||
+                         (currentStepIndex === 1 && !isImageUploaded) ||
+                         (currentStepIndex === 2 && selectedProposal === null);
 
   return (
     <div className="flex justify-center items-center">
@@ -77,13 +78,13 @@ function Stepper({ isImageUploaded, result }) {
       </Steps>
 
       <div className="fixed bottom-4 left-10 flex items-center justify-end">
-        {currentStepIndex !== 0 && (
+        {currentStepIndex !== 0 && currentStepIndex !== stepPaths.length - 1 && (
           <Button size="sm" onClick={handleBack}>
             Atrás
           </Button>
         )}
       </div>
-      <div className="fixed bottom-4 right-10 flex items-center justify-end">
+      <div className={`fixed bottom-4 ${currentStepIndex === 0 || currentStepIndex === stepPaths.length - 1 ? 'left-1/2 transform -translate-x-1/2' : 'right-10'} flex items-center justify-end`}>
         <Button
           size="sm"
           onClick={handleNext}
@@ -98,7 +99,8 @@ function Stepper({ isImageUploaded, result }) {
 
 Stepper.propTypes = {
   isImageUploaded: PropTypes.bool.isRequired,
-  result: PropTypes.object, // Asegúrate de que el resultado puede ser null al inicio
+  result: PropTypes.object,
+  selectedProposal: PropTypes.number, // Añadido prop para manejar la propuesta seleccionada
 };
 
 export default Stepper;

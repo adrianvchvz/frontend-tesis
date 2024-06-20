@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +16,11 @@ function CargaPlano() {
   const [isImageUploaded, setIsImageUploaded] = useState(false);
   const [isPredictionComplete, setIsPredictionComplete] = useState(false);
   const [showProgressBar, setShowProgressBar] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  useEffect(() => {
+    localStorage.removeItem('isImageUploaded'); // Remove flag on component mount
+  }, []);
 
   const handleImageDrop = (event) => {
     event.preventDefault();
@@ -33,6 +38,16 @@ function CargaPlano() {
   };
 
   const handleFileUpload = (file) => {
+    const allowedTypes = ['image/png', 'image/jpeg'];
+    if (!allowedTypes.includes(file.type)) {
+      setImage(null); // Reset the image preview
+      setErrorMessage('El archivo seleccionado no es válido.\nSolo se aceptan imágenes en formato PNG o JPG.');
+      setUploadProgress(0); // Reset the upload progress bar
+      setIsImageUploaded(false); // Disable the next button
+      return;
+    }
+
+    setErrorMessage(null); // Clear any previous error messages
     setUploadProgress(0);
     setImage(URL.createObjectURL(file));
     setIsImageUploaded(false);
@@ -81,6 +96,7 @@ function CargaPlano() {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           saveImageURLToFirestore(downloadURL);
           setIsImageUploaded(true);
+          localStorage.setItem('isImageUploaded', 'true'); // Guardar bandera en localStorage
         });
       }
     );
@@ -129,7 +145,7 @@ function CargaPlano() {
               </label>
             </Upload.Icon>
 
-            <p className="text-body-3 font-medium text-metal-600">
+            <p className="text-body-3 font-medium text-metal-600 mt-4">
               Arrastra y suelte una imagen o elige el archivo
             </p>
             <input
@@ -138,8 +154,8 @@ function CargaPlano() {
               onChange={handleImageDrop}
               className="hidden"
             />
-            <p className="text-body-4 font-normal text-metal-400">
-              Sólo se aceptan imágenes en formato PNG o JPG.
+            <p className="text-body-4 font-normal text-metal-400 mt-2">
+              Solo se aceptan imágenes en formato PNG o JPG.
             </p>
           </div>
         </div>
@@ -155,6 +171,9 @@ function CargaPlano() {
                 alt="Vista previa de la imagen"
                 className="w-48 h-48 object-contain"
               />
+            )}
+            {errorMessage && (
+              <p className="text-red-500 text-center mt-12 whitespace-pre-wrap">{errorMessage}</p>
             )}
           </div>
         </div>

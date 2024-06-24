@@ -19,7 +19,7 @@ function CargaPlano() {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    localStorage.removeItem('isImageUploaded'); // Remove flag on component mount
+    localStorage.removeItem('isImageUploaded'); 
   }, []);
 
   const handleImageDrop = (event) => {
@@ -40,14 +40,14 @@ function CargaPlano() {
   const handleFileUpload = (file) => {
     const allowedTypes = ['image/png', 'image/jpeg'];
     if (!allowedTypes.includes(file.type)) {
-      setImage(null); // Reset the image preview
+      setImage(null); 
       setErrorMessage('El archivo seleccionado no es válido.\nSolo se aceptan imágenes en formato PNG o JPG.');
-      setUploadProgress(0); // Reset the upload progress bar
-      setIsImageUploaded(false); // Disable the next button
+      setUploadProgress(0); 
+      setIsImageUploaded(false);
       return;
     }
 
-    setErrorMessage(null); // Clear any previous error messages
+    setErrorMessage(null); 
     setUploadProgress(0);
     setImage(URL.createObjectURL(file));
     setIsImageUploaded(false);
@@ -111,6 +111,7 @@ function CargaPlano() {
       console.log("Documento escrito con ID: ", docRef.id);
     } catch (e) {
       console.error("Error al agregar el documento: ", e);
+      setErrorMessage('Error al agregar el documento a Firestore. Verifica los permisos.');
     }
   };
 
@@ -136,7 +137,6 @@ function CargaPlano() {
                 onChange={handleImageChange}
                 className="hidden"
               />
-
               <label
                 htmlFor="fileInput"
                 className="rounded-xl cursor-pointer hover:bg-gray-300 focus:outline-none"
@@ -144,7 +144,6 @@ function CargaPlano() {
                 <img src="src/assets/folder.svg" alt="folder" />
               </label>
             </Upload.Icon>
-
             <p className="text-body-3 font-medium text-metal-600 mt-4">
               Arrastra y suelte una imagen o elige el archivo
             </p>

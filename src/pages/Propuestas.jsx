@@ -20,7 +20,7 @@ function Propuestas() {
   const [loadingImages, setLoadingImages] = useState([true, true]); 
 
   useEffect(() => {
-    fetch("https://9e23-35-201-212-32.ngrok-free.app/generate_plans", {
+    fetch("https://3a60-34-171-207-244.ngrok-free.app/generate_plans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

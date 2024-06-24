@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useEffect, useState, useContext } from "react";
-import { collection, query, orderBy, limit, getDocs,  } from "firebase/firestore";
+import { collection, query, orderBy, limit, getDocs } from "firebase/firestore";
 import { db } from "../key/firebase";
 import Stepper from "../components/Stepper";
 import { Minus, Plus } from "phosphor-react";
@@ -25,13 +25,13 @@ function Personalizacion() {
     if (isImageUploaded) {
       fetchImageURL();
     } else {
-      setImageURL(""); // No image available
+      setImageURL(""); 
       setLoading(false);
     }
   }, []);
 
   const fetchImageURL = async () => {
-    setLoading(true); // Set loading to true when fetching the image URL
+    setLoading(true); 
     const q = query(
       collection(db, "images"),
       orderBy("createdAt", "desc"),
@@ -45,7 +45,7 @@ function Personalizacion() {
         setImageURL(url);
       });
     } else {
-      setImageURL(""); // No image available
+      setImageURL(""); 
     }
     setLoading(false);
   };
@@ -62,7 +62,7 @@ function Personalizacion() {
       <div className="grid grid-cols-2 gap-4">
         <div className="grid grid-cols-2 gap-4 mt-6 ml-24">
           <fieldset className="space-y-1">
-            <Label>Bedroom</Label>
+            <Label>Habitación</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.bedroom === 1}
@@ -72,12 +72,12 @@ function Personalizacion() {
               </NumberInput.Button>
               <NumberInput.Input
                 min={1}
-                max={5}
+                max={3}
                 value={parameters.bedroom}
                 onChange={(e) => updateParameters('bedroom', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={parameters.bedroom === 5}
+                disabled={parameters.bedroom === 3}
                 onClick={() => updateParameters('bedroom', parameters.bedroom + 1)}
               >
                 <Plus size={16} color="#455468" />
@@ -85,7 +85,7 @@ function Personalizacion() {
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Bathroom</Label>
+            <Label>Baño</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.bathroom === 1}
@@ -95,12 +95,12 @@ function Personalizacion() {
               </NumberInput.Button>
               <NumberInput.Input
                 min={1}
-                max={5}
+                max={3}
                 value={parameters.bathroom}
                 onChange={(e) => updateParameters('bathroom', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={parameters.bathroom === 5}
+                disabled={parameters.bathroom === 3}
                 onClick={() => updateParameters('bathroom', parameters.bathroom + 1)}
               >
                 <Plus size={16} color="#455468" />
@@ -108,7 +108,7 @@ function Personalizacion() {
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Kitchen</Label>
+            <Label>Cocina</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.kitchen === 1}
@@ -118,12 +118,12 @@ function Personalizacion() {
               </NumberInput.Button>
               <NumberInput.Input
                 min={1}
-                max={5}
+                max={3}
                 value={parameters.kitchen}
                 onChange={(e) => updateParameters('kitchen', +e.target.value)}
               />
               <NumberInput.Button
-                disabled={parameters.kitchen === 5}
+                disabled={parameters.kitchen === 3}
                 onClick={() => updateParameters('kitchen', parameters.kitchen + 1)}
               >
                 <Plus size={16} color="#455468" />
@@ -131,7 +131,7 @@ function Personalizacion() {
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Living Room</Label>
+            <Label>Sala</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.living_room === 0}
@@ -154,7 +154,7 @@ function Personalizacion() {
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Dining Room</Label>
+            <Label>Comedor</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.dining_room === 0}
@@ -177,7 +177,7 @@ function Personalizacion() {
             </NumberInput>
           </fieldset>
           <fieldset className="space-y-1">
-            <Label>Garage</Label>
+            <Label>Garaje</Label>
             <NumberInput>
               <NumberInput.Button
                 disabled={parameters.garage === 0}

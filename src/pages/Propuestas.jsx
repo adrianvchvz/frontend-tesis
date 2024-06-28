@@ -23,14 +23,19 @@ function Propuestas() {
 
   const fetchImages = useCallback(() => {
     setLoadingImages([true, true]);
-    fetch("https://da3d-104-198-132-25.ngrok-free.app/generate_plans", {
+    console.log("Parámetros enviados a la API:", parameters);
+
+    fetch("https://0a23-34-148-137-8.ngrok-free.app/generate_plans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(parameters),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log("Respuesta de la API:", response); // Log para verificar la respuesta
+        return response.json();
+      })
       .then((data) => {
         if (data.status === "success") {
           setImages(data.generated_images);

@@ -52,6 +52,7 @@ function Personalizacion() {
 
   const updateParameters = (field, value) => {
     setParameters((prev) => ({ ...prev, [field]: value }));
+    console.log("Parámetro actualizado:", field, value);
   };
 
   const isImageUploaded = !loading && imageURL !== "";

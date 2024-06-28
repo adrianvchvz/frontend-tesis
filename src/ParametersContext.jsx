@@ -12,6 +12,7 @@ export const ParametersProvider = ({ children }) => {
     living_room: 0,
     dining_room: 0,
     garage: 0,
+    land_size: 0,
   });
 
   return (

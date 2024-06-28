@@ -23,7 +23,7 @@ function Propuestas() {
 
   const fetchImages = useCallback(() => {
     setLoadingImages([true, true]);
-    fetch("https://3a60-34-171-207-244.ngrok-free.app/generate_plans", {
+    fetch("https://da3d-104-198-132-25.ngrok-free.app/generate_plans", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
